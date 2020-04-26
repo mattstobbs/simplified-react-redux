@@ -11,7 +11,7 @@ const Todos = ({ todos, addTodo, removeTodo, checkTodo }) => {
 
   const handleKeyDown = (e) => {
     if (e.keyCode === 13) {
-      addTodo({ id: todos.length + 1, isDone: false, description: newTodo });
+      addTodo(newTodo);
       setNewTodo('');
     }
   };
