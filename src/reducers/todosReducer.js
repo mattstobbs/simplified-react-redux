@@ -7,7 +7,7 @@ const todosReducer = (state = [], action) => {
         {
           id: state.length + 1,
           isDone: false,
-          description: action.description,
+          description: action.newTodo,
         },
         ...state,
       ];

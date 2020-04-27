@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const Context = createContext();
 
@@ -11,13 +11,40 @@ const ConnectedComponent = ({
   mapDispatchToProps,
   component,
 }) => {
-  const { getState, dispatch } = useContext(Context);
+  const { getState, dispatch, subscribe } = useContext(Context);
   const state = getState();
+
+  let stateProps = {};
+  if (mapStateToProps) {
+    stateProps = mapStateToProps(state);
+  }
   const props = {
-    ...(mapStateToProps && mapStateToProps(state)),
+    ...stateProps,
     ...(mapDispatchToProps && mapDispatchToProps(dispatch)),
   };
-  return component(props);
+
+  const [currentProps, setCurrentProps] = useState(props);
+
+  useEffect(() => {
+    const updateProps = () => {
+      if (mapStateToProps) {
+        const newStateProps = mapStateToProps(getState());
+
+        if (JSON.stringify(newStateProps) !== JSON.stringify(stateProps)) {
+          setCurrentProps({
+            ...currentProps,
+            ...newStateProps,
+          });
+        }
+      }
+    };
+
+    const unsubscribe = subscribe(updateProps);
+
+    return unsubscribe;
+  });
+
+  return component(currentProps);
 };
 
 export const connect = (mapStateToProps, mapDispatchToProps) => {
