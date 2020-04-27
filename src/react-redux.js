@@ -58,3 +58,20 @@ export const connect = (mapStateToProps, mapDispatchToProps) => {
     );
   };
 };
+
+export const useStore = () => {
+  const store = useContext(Context);
+  return store;
+};
+
+export const useDispatch = () => {
+  const { dispatch } = useContext(Context);
+  return dispatch;
+};
+
+export const useSelector = (selector) => {
+  const { getState } = useContext(Context);
+  const state = getState();
+  const value = selector(state);
+  return value;
+};
